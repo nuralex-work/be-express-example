@@ -8,6 +8,7 @@ dist
 node_modules
 .env*
 
+updev.sh
 docker-compose.yaml
 Dockerfile
 Jenkinsfile
