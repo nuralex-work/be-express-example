@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// user management
+model m_roles {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name       String?   @unique @db.VarChar(255)
+  permission Json?     @db.JsonB
+  status     String?   @default("Active")
+  isdefault  Boolean   @default(false)
+  created_at DateTime? @default(now()) @db.Timestamptz()
+  created_by String?   @db.Uuid
+  updated_at DateTime? @updatedAt @db.Timestamptz()
+  updated_by String?   @db.Uuid
+  deleted_at DateTime? @db.Timestamptz()
+  deleted_by String?   @db.Uuid
+  users      m_user[]
+}
+
+model m_user {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email      String?   @unique @db.VarChar(255)
+  password   String    @db.VarChar(255)
+  username   String    @unique @db.VarChar(255)
+  fullname   String?   @db.VarChar(255)
+  roleid     String    @db.Uuid
+  status     String?   @default("Active") @db.VarChar(45)
+  created_at DateTime? @default(now()) @db.Timestamptz()
+  created_by String?   @db.Uuid
+  updated_at DateTime? @updatedAt @db.Timestamptz()
+  updated_by String?   @db.Uuid
+  deleted_at DateTime? @db.Timestamptz()
+  deleted_by String?   @db.Uuid
+  last_login DateTime? @db.Timestamptz()
+  roles      m_roles   @relation(fields: [roleid], references: [id])
+}
+
+// Master data 
+model m_stage {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name       String    @unique @db.VarChar(255)
+  created_at DateTime? @default(now()) @db.Timestamptz()
+  created_by String?   @db.Uuid
+  updated_at DateTime? @updatedAt @db.Timestamptz()
+  updated_by String?   @db.Uuid
+  deleted_at DateTime? @db.Timestamptz()
+  deleted_by String?   @db.Uuid
+}
